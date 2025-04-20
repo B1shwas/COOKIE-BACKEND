@@ -13,6 +13,7 @@ export enum ORDER_TYPE {
 export enum PAYMENT_STATUS {
   COMPLETED = "COMPLETED",
   PENDING = "PENDING",
+  FAILED = "FAILED",
 }
 
 export enum PAYMENT_METHOD {

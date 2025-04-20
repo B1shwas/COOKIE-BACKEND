@@ -1,11 +1,5 @@
 import { Type } from "class-transformer";
-import {
-  IsEnum,
-  IsMongoId,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from "class-validator";
+import { IsEnum, IsMongoId, IsOptional, IsString, ValidateNested } from "class-validator";
 import { ORDER_STATUS, ORDER_TYPE, PAYMENT_METHOD } from "../enum/order.enum";
 
 export class OrderDetailsDto {
@@ -25,6 +19,10 @@ export class OrderDetailsDto {
 export class EsewaPaymentInfoDto {
   @IsString()
   transactionId: string;
+
+  @IsOptional()
+  @IsString()
+  refId?: string;
 }
 
 export class CreateOrderDto {

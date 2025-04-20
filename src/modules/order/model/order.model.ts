@@ -1,13 +1,13 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Document, Types } from "mongoose";
-import { Menu } from "src/modules/menu/model/menu.model";
-import { User } from "src/modules/user/model/user.model";
 import {
   ORDER_STATUS,
   ORDER_TYPE,
-  PAYMENT_METHOD,
   PAYMENT_STATUS,
+  PAYMENT_METHOD,
 } from "../enum/order.enum";
+import { User } from "src/modules/user/model/user.model";
+import { Menu } from "src/modules/menu/model/menu.model";
 
 @Schema({ timestamps: true })
 export class Order extends Document {
@@ -56,10 +56,16 @@ export class Order extends Document {
   paymentMethod: PAYMENT_METHOD;
 
   @Prop({
-    type: { transactionId: { type: String, required: true } },
+    type: {
+      transactionId: { type: String, required: true },
+      refId: { type: String, required: false },
+    },
     required: false,
   })
-  paymentInfo?: { transactionId: string };
+  paymentInfo?: { transactionId: string; refId?: string };
+
+  @Prop({ type: String, required: false })
+  transactionUuid?: string;
 }
 
 export const OrderSchema = SchemaFactory.createForClass(Order);
