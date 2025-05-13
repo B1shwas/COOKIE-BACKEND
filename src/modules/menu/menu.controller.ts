@@ -37,8 +37,7 @@ export class MenuController {
   ) {
     const data: CreateMenuDto = JSON.parse(rawData);
     const userId = req.user.id;
-    console.log(userId);
-    const imageUrl = { url: `http://localhost:3000/${file.path}` };
+    const imageUrl = { url: `http://localhost:3001/${file.path}` };
 
     return this.menuService.createMenu(data, userId, imageUrl.url);
   }
@@ -76,7 +75,7 @@ export class MenuController {
     @Body() data: UpdateMenuDto,
     @UploadedFile() file?: Multer.File
   ) {
-    const imageUrl = { url: `http://localhost:3000/${file.path}` };
+    const imageUrl = { url: `http://localhost:3001/${file.path}` };
     return await this.menuService.updateMenuById(id, data, imageUrl.url);
   }
 }

@@ -64,6 +64,48 @@ export class CartService {
     }
   }
 
+  async removeItemFromCart(
+    userId: string,
+    removeItemDto: AddCartItemDto
+  ): Promise<Cart> {
+    try {
+      const { menuItemId, quantity } = removeItemDto;
+
+      const cart = await this.cartModel.findOne({ userId });
+      if (!cart) {
+        throw new NotFoundException("Cart not found");
+      }
+
+      const existingItem = cart.items.find(
+        (item) => item.menuItemId.toString() === menuItemId
+      );
+
+      if (!existingItem) {
+        throw new NotFoundException("Item not found in cart");
+      }
+
+      if (existingItem.quantity > quantity) {
+        existingItem.quantity -= quantity;
+      } else {
+        cart.items = cart.items.filter(
+          (item) => item.menuItemId.toString() !== menuItemId
+        );
+      }
+
+      cart.totalPrice = await this.calculateTotalPrice(cart.items);
+
+      return await cart.save();
+    } catch (error) {
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      throw new InternalServerErrorException("Error removing item from cart");
+    }
+  }
+
   async getCart(userId: string): Promise<Cart> {
     try {
       const cart = await this.cartModel

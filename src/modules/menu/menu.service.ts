@@ -45,21 +45,31 @@ export class MenuService {
       };
     }
 
+    const totalItems = await this.menuModel.countDocuments(filter);
+
+    const totalPages = Math.ceil(totalItems / limit);
+
     const menuItems = await this.menuModel
       .find(filter)
       .limit(limit)
-      .skip(page * limit)
+      .skip((page - 1) * limit)
       .populate([
         {
           path: "createdBy",
           select: "username",
         },
       ]);
+
     if (!menuItems || menuItems.length === 0) {
       throw new NotFoundException("No menu items found");
     }
 
-    return menuItems;
+    return {
+      items: menuItems,
+      totalItems,
+      totalPages,
+      currentPage: page,
+    };
   }
 
   async getMenuById(id: string) {

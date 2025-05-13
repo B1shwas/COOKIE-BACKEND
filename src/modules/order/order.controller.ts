@@ -7,9 +7,9 @@ import {
   Body,
   Param,
   Req,
+  Query,
   UseGuards,
   HttpCode,
-  Query,
 } from "@nestjs/common";
 import { OrderService } from "./order.service";
 import { CreateOrderDto, UpdateOrderStatusDto } from "./dto/order.dto";
@@ -25,10 +25,10 @@ export class OrderController {
   @UseGuards(JwtGuard)
   @Post("create")
   async createOrder(
-    @Body() createOrderDto: CreateOrderDto,
+    @Body() dto: CreateOrderDto,
     @Req() req: any
   ): Promise<Order> {
-    return await this.orderService.createOrder(req.user.id, createOrderDto);
+    return await this.orderService.createOrder(req.user.id, dto);
   }
 
   @UseGuards(JwtGuard)
@@ -49,9 +49,9 @@ export class OrderController {
   @Put("status/:orderId")
   async updateOrderStatus(
     @Param("orderId") orderId: string,
-    @Body() updateStatusDto: UpdateOrderStatusDto
+    @Body() dto: UpdateOrderStatusDto
   ): Promise<Order> {
-    return await this.orderService.updateOrderStatus(orderId, updateStatusDto);
+    return await this.orderService.updateOrderStatus(orderId, dto);
   }
 
   @Roles("ADMIN")
@@ -72,14 +72,18 @@ export class OrderController {
   }
 
   @Get("esewa/success")
-  async handleEsewaSuccess(@Query("data") encodedData: string): Promise<Order> {
-    return await this.orderService.verifyEsewaPayment(encodedData);
+  async handleEsewaSuccess(
+    @Query("oid") pid: string,
+    @Query("amt") amt: string,
+    @Query("refId") refId: string
+  ): Promise<Order> {
+    return await this.orderService.verifyEsewaPayment(pid, +amt, refId);
   }
 
   @Get("esewa/failure")
   async handleEsewaFailure(
-    @Query("transaction_uuid") transactionUuid: string
+    @Query("transaction_uuid") uuid: string
   ): Promise<Order> {
-    return await this.orderService.handleEsewaFailurre(transactionUuid);
+    return await this.orderService.handleEsewaFailurre(uuid);
   }
 }

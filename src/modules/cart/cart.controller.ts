@@ -49,6 +49,16 @@ export class CartController {
   }
 
   @UseGuards(JwtGuard)
+  @Post("remove")
+  @HttpCode(200)
+  async removeItem(
+    @Body() removeItem: AddCartItemDto,
+    @Req() req: any
+  ): Promise<Cart> {
+    return await this.cartService.removeItemFromCart(req.user.id, removeItem);
+  }
+
+  @UseGuards(JwtGuard)
   @Delete("remove/:menuItemId")
   @HttpCode(200)
   async removeCartItem(

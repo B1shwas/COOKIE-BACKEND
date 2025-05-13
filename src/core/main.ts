@@ -11,7 +11,10 @@ async function bootstrap() {
 
   app.use(helmet());
   app.useGlobalPipes(new ValidationPipe());
-  app.enableCors({ origin: "*" });
+  app.enableCors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  });
 
   const uploadsPath = join(__dirname, "../../uploads");
 
@@ -23,7 +26,7 @@ async function bootstrap() {
     prefix: "/uploads",
   });
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3001);
 }
 
 bootstrap();
